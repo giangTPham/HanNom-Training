@@ -26,7 +26,7 @@ def check_exist_and_download_fonts(font_path):
 		os.makedirs(font_path)
 		
 		download_font(font_path)
-	else if len(os.listdir(font_path)) == 0:
+	elif len(os.listdir(font_path)) == 0:
 		download_font(font_path)
 	else:
 		print('Using fonts from {} to generate training data.'.format(font_path))
