@@ -1,0 +1,1 @@
+from .imgen import gen_char_img
