@@ -16,9 +16,9 @@ def download_font(font_path):
 	with ZipFile(destination, 'r') as zip:
 		# extracting all the files
 		print('Extracting all the fonts...')
-		zip.extractall()
+		zip.extractall(font_path)
 		print('Done!')
-		os.remove(destination)
+	os.remove(destination)
 
 def check_exist_and_download_fonts(font_path):
 	if not (os.path.exists(font_path)):
