@@ -6,24 +6,28 @@ def check_font_extension(font_name):
 	ALLOWED_FONT_EXTENSIONS = ['ttf', 'otf', 'ttc']
 	return font_name.rsplit('.', 1)[-1].lower() in ALLOWED_FONT_EXTENSIONS
 
+def download_font(font_path):
+	print('Downloading fonts...')
+	link_id = '122Xio9ZiJm2Ulqh6U-S5FAabVHMXi_zQ'
+	save_dir = 'fonts.zip'
+	destination = os.path.join(font_path, save_dir)
+	download_file_from_google_drive(link_id, destination)
+	
+	with ZipFile(destination, 'r') as zip:
+		# extracting all the files
+		print('Extracting all the fonts...')
+		zip.extractall()
+		print('Done!')
+		os.remove(destination)
+
 def check_exist_and_download_fonts(font_path):
 	if not (os.path.exists(font_path)):
 		print('{} not fount!'.format(font_path))
-		print('Downloading fonts...')
 		os.makedirs(font_path)
 		
-		link_id = '1122Xio9ZiJm2Ulqh6U-S5FAabVHMXi_zQ'
-		save_dir = 'fonts.zip'
-		destination = os.path.join(font_path, save_dir)
-		download_file_from_google_drive(link_id, destination)
-		
-		with ZipFile(destination, 'r') as zip:
-			# extracting all the files
-			print('Extracting all the fonts...')
-			zip.extractall()
-			print('Done!')
-			os.remove(destination)
-			
+		download_font(font_path)
+	else if len(os.listdir(font_path)) == 0:
+		download_font(font_path)
 	else:
 		print('Using fonts from {} to generate training data.'.format(font_path))
 		
