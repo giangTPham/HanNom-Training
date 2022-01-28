@@ -85,7 +85,7 @@ def main(cfg) -> None:
 				writer.add_scalar(tag='loss/std', scalar_value=std_tracker.avg, global_step=n_iter)
 
 			n_iter += 1
-			break
+			
 
 	# save model
 	dir_path = os.path.dirname(os.path.realpath(__file__))
