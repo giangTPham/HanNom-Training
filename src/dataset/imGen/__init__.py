@@ -1,1 +1,1 @@
-from .imgen import gen_char_img
+from .imgen import FontStorage

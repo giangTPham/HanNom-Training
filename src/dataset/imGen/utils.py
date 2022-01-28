@@ -19,6 +19,7 @@ def download_font(font_path):
 		zip.extractall(font_path)
 		print('Done!')
 	os.remove(destination)
+	print('Using fonts from {} to generate training data.'.format(font_path))
 
 def check_exist_and_download_fonts(font_path):
 	if not (os.path.exists(font_path)):
@@ -28,8 +29,6 @@ def check_exist_and_download_fonts(font_path):
 		download_font(font_path)
 	elif len(os.listdir(font_path)) == 0:
 		download_font(font_path)
-	else:
-		print('Using fonts from {} to generate training data.'.format(font_path))
 		
 		
 # ====================

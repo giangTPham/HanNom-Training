@@ -11,6 +11,7 @@ class FontStorage:
 		self.font_list = []
 		self.font_names = list(filter(check_font_extension, os.listdir(self.font_path)))
 		self.cached_img_size=-1
+		self.n_fonts = len(self.font_names)
 
 	def load_font(self, font_size=45):
 		self.font_list = []
@@ -21,23 +22,21 @@ class FontStorage:
 	def check_fontsize_change(self, img_size):
 		change = self.cached_img_size != img_size
 		if change:
-			new_font_size = int(45/64 * img_size)
+			new_font_size = int(45/64. * img_size)
 			self.cached_img_size = img_size
 			self.load_font(new_font_size)
 			
 	def __len__(self):
-		return len(self.font_names)
+		return self.n_fonts
 
-fonts = FontStorage()
-
-def gen_char_img(text, font_index, img_size=64, include_font_name=False):
-	fonts.check_fontsize_change(img_size)
-	im = Image.new("RGB", (img_size, img_size), (255, 255, 255))
-	dr = ImageDraw.Draw(im)
-	dr.text((2, 1), text, font=fonts.font_list[font_index], fill="#000000")
-	if include_font_name:
-		dr.text((0, 0), fonts.font_names[font_index], fill="#000000")
-	img_np = np.array(im, dtype=np.float32)
-	im.close()
-	return img_np
+	def gen_char_img(self, text, font_index, img_size=64, include_font_name=False):
+		self.check_fontsize_change(img_size)
+		im = Image.new("RGB", (img_size, img_size), (255, 255, 255))
+		dr = ImageDraw.Draw(im)
+		dr.text((2, 1), text, font=self.font_list[font_index%self.n_fonts], fill="#000000")
+		if include_font_name:
+			dr.text((0, 0), self.font_names[font_index%self.n_fonts], fill="#000000")
+		img_np = np.array(im, dtype=np.float32)
+		im.close()
+		return img_np
 	

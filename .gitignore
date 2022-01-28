@@ -4,3 +4,5 @@ venv
 **.otf
 **.ttc
 **.zip
+**.pth
+**events.**
