@@ -22,13 +22,14 @@ class FontStorage:
 	def check_fontsize_change(self, img_size):
 		change = self.cached_img_size != img_size
 		if change:
-			new_font_size = int(45/64. * img_size)
+			print('Detect font size changes, reloading fonts...')
+			new_font_size = int(45 * img_size / 64)
 			self.cached_img_size = img_size
 			self.load_font(new_font_size)
 			
 	def __len__(self):
 		return self.n_fonts
-
+		
 	def gen_char_img(self, text, font_index, img_size=64, include_font_name=False):
 		self.check_fontsize_change(img_size)
 		im = Image.new("RGB", (img_size, img_size), (255, 255, 255))

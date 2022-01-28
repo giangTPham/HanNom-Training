@@ -8,8 +8,10 @@ def get_allCharacters():
 
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	chinese_dict_path = os.path.join(dir_path, 'cleaned-chinese-word-list.txt')
+	print('Reading list of Chinese Characters used for training...')
 	with open(chinese_dict_path, 'r', encoding="utf-8") as f:
 		allCharacters = f.readlines()[0]
+	print('Done')
 	return allCharacters
 	
 
