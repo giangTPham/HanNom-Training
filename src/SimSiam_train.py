@@ -3,6 +3,7 @@ import os
 import torch
 from tqdm.auto import tqdm
 from torch.utils.tensorboard import SummaryWriter
+import os
 
 from models import SimSiamModel
 from loss import negative_cosine_similarity
@@ -86,9 +87,12 @@ def main(cfg) -> None:
 			n_iter += 1
 			break
 
-		# save checkpoint
-		if (epoch + 1) % cfg.train.checkpoint_inter == 0:
-			torch.save(model.encoder.state_dict(), os.path.join(writer.log_dir, cfg.model.name + f"_{epoch + 1}.pt"))
+	# save model
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	weight_path = os.path.join(dir_path, 'weights')
+	if not (os.path.exists(weight_path)):
+		os.makedirs(weight_path)
+	torch.save(model.state_dict(), os.path.join(weight_path, cfg.model.name + "_final.pt"))
 
 
 if __name__ == "__main__":

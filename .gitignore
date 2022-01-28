@@ -6,3 +6,4 @@ venv
 **.zip
 **.pth
 **events.**
+**.pt

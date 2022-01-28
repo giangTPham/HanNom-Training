@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 from .imGen import FontStorage
-from .ChineseDictionary import allCharacters
+from .ChineseDictionary import get_allCharacters
 from .dataAugment import basic_transforms
 import random
 
@@ -12,7 +12,8 @@ class BaseDataset(Dataset):
 	def __init__(self, cfg, transform=None):
 		self.fonts = FontStorage()
 		self.n_fonts = len(self.fonts)
-		self.n_chars = len(allCharacters)
+		self.allCharacters = get_allCharacters()
+		self.n_chars = len(self.allCharacters)
 		self.len = self.n_fonts * self.n_chars
 		self.transform = transform
 		self.img_size = cfg.data.input_shape
@@ -35,7 +36,7 @@ class SimSiamDataset(BaseDataset):
 	def __getitem__(self, i):
 		char_index = i % self.n_fonts
 		font_index = i // self.n_fonts
-		char = allCharacters[char_index]
+		char = self.allCharacters[char_index]
 		
 		x1 = self.fonts.gen_char_img(char, font_index, self.img_size)
 		x2 = self.fonts.gen_char_img(char, random.randint(0, self.n_fonts), self.img_size)

@@ -1,5 +1,5 @@
 if __name__ == '__main__':
-	from dataset.ChineseDictionary import allCharacters
+	from dataset.ChineseDictionary import get_allCharacters
 	import random
 	import math
 	import argparse
@@ -9,6 +9,7 @@ if __name__ == '__main__':
 	from dataset.imGen.imgen import FontStorage
 	
 	fonts = FontStorage()
+	allCharacters = get_allCharacters()
 	
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--ic', dest='ic', 
