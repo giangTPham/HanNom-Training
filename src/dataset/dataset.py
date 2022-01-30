@@ -11,7 +11,8 @@ class BaseDataset(Dataset):
 	Support generating synthetic images online.
 	'''
 	def __init__(self, cfg, transform=None):
-		self.fonts = FontStorage()
+		self.fonts = FontStorage(n_fonts=cfg.data.n_fonts, 
+			img_size=cfg.data.input_shape)
 		self.n_fonts = len(self.fonts)
 		self.allCharacters = get_allCharacters()
 		self.n_chars = len(self.allCharacters)
@@ -34,7 +35,7 @@ class BaseDataset(Dataset):
 			font_index = i // self.n_fonts
 			char = self.allCharacters[char_index]
 			
-			data = self.fonts.gen_char_img(char, font_index, self.img_size)
+			data = self.fonts.gen_char_img(char, font_index)
 			self.cache.add(data, i)
 			return data
 		

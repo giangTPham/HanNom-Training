@@ -53,9 +53,11 @@ def main(cfg) -> None:
 	n_iter = 0
 	std_tracker = AverageMeter('std_stacker')
 	for epoch in range(cfg.train.epochs):
+		print("="*50)
+		print("Epochs [{}/{}]".format(epoch+1, cfg.train.epochs))
 		std_tracker.reset()
-		pbar = tqdm(enumerate(train_dataloader), total=len(train_dataloader), position=0, leave=False)
-		for batch, (x1, x2) in pbar:
+		
+		for batch, (x1, x2) in enumerate(train_dataloader):
 			opt.zero_grad()
 			x1, x2 = x1.to(cfg.device), x2.to(cfg.device)
 			
@@ -78,9 +80,9 @@ def main(cfg) -> None:
 				z2_std = calculate_std_l2_norm(z2)
 				std_tracker.update(z1_std + z2_std)
 
-			pbar.set_description("Epoch {}, Loss: {:.4f}, Std: {:.6f}".format(epoch, float(loss), std_tracker.avg))
-
 			if n_iter % cfg.train.log_interval == 0:
+				print("[Epoch {}/{} | Loss: {:.4f} | Std: {:.4f}]".format(epoch+1, cfg.train.epochs,
+					float(loss), std_tracker.avg))
 				writer.add_scalar(tag="loss/train", scalar_value=float(loss), global_step=n_iter)
 				writer.add_scalar(tag='loss/std', scalar_value=std_tracker.avg, global_step=n_iter)
 
@@ -89,7 +91,7 @@ def main(cfg) -> None:
 
 	# save model
 	dir_path = os.path.dirname(os.path.realpath(__file__))
-	weight_path = os.path.join(dir_path, 'weights')
+	weight_path = os.path.join(dir_path, 'weights', 'simsiam')
 	if not (os.path.exists(weight_path)):
 		os.makedirs(weight_path)
 	torch.save(model.state_dict(), os.path.join(weight_path, cfg.model.name + "_final.pt"))

@@ -8,7 +8,6 @@ if __name__ == '__main__':
 	from torchvision.utils import save_image
 	from dataset.imGen.imgen import FontStorage
 	
-	fonts = FontStorage()
 	allCharacters = get_allCharacters()
 	
 	parser = argparse.ArgumentParser()
@@ -27,12 +26,13 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	
 	num_examples = len(fonts)
+	fonts = FontStorage(img_size=args.size)
 	
 	if args.ic:
 		char = allCharacters[random.randint(0, len(allCharacters)-1)]
-		chars = [fonts.gen_char_img(char, f_idx, args.size, args.font_name)[None, ...] for f_idx in range(num_examples)]
+		chars = [fonts.gen_char_img(char, f_idx, args.font_name)[None, ...] for f_idx in range(num_examples)]
 	else:
-		chars = [fonts.gen_char_img(allCharacters[random.randint(0, len(allCharacters)-1)], f_idx, args.size, args.font_name)[None, ...] for f_idx in range(num_examples)]
+		chars = [fonts.gen_char_img(allCharacters[random.randint(0, len(allCharacters)-1)], f_idx, args.font_name)[None, ...] for f_idx in range(num_examples)]
 		
 	chars = torch.from_numpy(np.concatenate(chars)).permute([0, 3, 1, 2])
 

@@ -11,7 +11,6 @@ if __name__ == '__main__':
 	from dataset.dataAugment import basic_transforms, augment_transforms
 	from utils import parse_args
 	
-	fonts = FontStorage()
 	allCharacters = get_allCharacters()
 	
 	parser = argparse.ArgumentParser()
@@ -40,17 +39,16 @@ if __name__ == '__main__':
                         help='Number of image columns in the final result')
 	args = parser.parse_args()
 	cfg = parse_args(args.config_path)
+	fonts = FontStorage(args.size)
 
 	num_examples = args.nrow * args.ncol
 	
 	if args.ic:
 		char = allCharacters[random.randint(0, len(allCharacters)-1)]
-		chars = [fonts.gen_char_img(char, f_idx % len(fonts), 
-				args.size) for f_idx in range(num_examples)]
+		chars = [fonts.gen_char_img(char, f_idx % len(fonts)) for f_idx in range(num_examples)]
 	else:
 		chars = [fonts.gen_char_img(allCharacters[random.randint(0, len(allCharacters)-1)], 
-				f_idx % len(fonts), 
-				args.size) for f_idx in range(num_examples)]
+				f_idx % len(fonts)) for f_idx in range(num_examples)]
 				
 	# save the original images to compare later
 	original = torch.from_numpy(np.array(chars)).permute([0,3,1,2])	
