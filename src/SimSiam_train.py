@@ -81,8 +81,8 @@ def main(cfg) -> None:
 				std_tracker.update(z1_std + z2_std)
 
 			if n_iter % cfg.train.log_interval == 0:
-				print("[Epoch {}/{} | Loss: {:.4f} | Std: {:.4f}]".format(epoch+1, cfg.train.epochs,
-					float(loss), std_tracker.avg))
+				print("[Epoch {}/{} | Iter {}/{} | Loss: {:.4f} | Std: {:.4f}]".format(epoch+1, cfg.train.epochs,
+					n_iter, len(train_dataloader), float(loss), std_tracker.avg))
 				writer.add_scalar(tag="loss/train", scalar_value=float(loss), global_step=n_iter)
 				writer.add_scalar(tag='loss/std', scalar_value=std_tracker.avg, global_step=n_iter)
 

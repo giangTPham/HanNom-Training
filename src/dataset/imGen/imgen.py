@@ -20,7 +20,7 @@ class FontStorage:
 		print("Loading fonts...")
 		self.font_list = []
 		for font_name in self.font_names:
-			font = ImageFont.truetype(os.path.join(self.font_path, font_name), self.font_size)
+			font = ImageFont.truetype(os.path.join(self.font_path, font_name), font_size)
 			self.font_list.append(font)
 		print("Done")
 			

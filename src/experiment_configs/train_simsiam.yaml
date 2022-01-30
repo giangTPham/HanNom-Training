@@ -9,6 +9,7 @@
     },
     "data": {
          "input_shape": 64,
+         "n_fonts": 25,
            "augmentation": {
              "resize_scale": 0.8,
              "random_erase": 0.2,
@@ -16,7 +17,7 @@
            }
     },
     "train": {
-        "epochs": 10,
+        "epochs": 2,
         "batch_size": 512,
         "lr": 0.05,
         "momentum": 0.9,
