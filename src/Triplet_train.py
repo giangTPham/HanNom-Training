@@ -87,5 +87,17 @@ def main(cfg: SimpleNamespace) -> None:
 
 
 if __name__ == "__main__":
-	cfg = parse_args()
+	import argparse
+
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--cfg_path', type=str,
+						default='experiment_configs/train_triplet.yaml',
+						help="Config path")
+	parser.add_argument('--epochs', type=int, 
+						default=-1,
+						help='Number of epochs')
+	args = parser.parse_args()
+	cfg = parse_args(args.cfg_path)
+	cfg.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+	cfg.train.epochs = cfg.train.epochs if args.epochs <= 0 else args.epochs
 	main(cfg)

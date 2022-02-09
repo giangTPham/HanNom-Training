@@ -19,7 +19,7 @@ class TripletModel(nn.Module):
 
         if freeze:
             for param in self.backbone.parameters():
-                param.requres_grad = False
+                param.requires_grad = False
 
         self.embedding_layer = NeckLayer(self.encoder.emb_dim, embedding_dim)
 
