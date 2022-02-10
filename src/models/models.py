@@ -15,7 +15,7 @@ class TripletModel(nn.Module):
         super().__init__()
 
         # backbone network
-        self.encoder = Backbone(backbone=backbone, pretrained=pretrained)
+        self.encoder = Encoder(backbone=backbone, pretrained=pretrained)
 
         # if freeze:
         #     for param in self.backbone.parameters():
