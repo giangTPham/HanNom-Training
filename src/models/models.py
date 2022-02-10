@@ -25,6 +25,7 @@ class TripletModel(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         e = self.encoder(x)
+        print(list(e.shape))
         return self.embedding_layer(e)
 
 
