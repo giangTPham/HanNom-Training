@@ -41,12 +41,12 @@ def main(cfg: SimpleNamespace) -> None:
 	
 	train_dataset = TripletDataset(cfg)
 
-	train_sampler = samplers.MPerClassSampler(train_dataset.label_list, cfg.data.sample_per_cls, batch_size=None,
-											  length_before_new_iter=len(train_dataset.label_list))
+	# train_sampler = samplers.MPerClassSampler(train_dataset.label_list, cfg.data.sample_per_cls, batch_size=None,
+	# 										  length_before_new_iter=len(train_dataset.label_list))
 	train_dataloader = torch.utils.data.DataLoader(train_dataset,
 												   batch_size=cfg.train.batch_size,
-												   sampler=train_sampler,
-												   shuffle=False,
+												#    sampler=train_sampler,
+												   shuffle=True,
 												   drop_last=False,
 												   pin_memory=True,
 												   num_workers=torch.multiprocessing.cpu_count())
