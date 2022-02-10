@@ -17,9 +17,9 @@ class TripletModel(nn.Module):
         # backbone network
         self.encoder = Backbone(backbone=backbone, pretrained=pretrained)
 
-        if freeze:
-            for param in self.backbone.parameters():
-                param.requires_grad = False
+        # if freeze:
+        #     for param in self.backbone.parameters():
+        #         param.requires_grad = False
 
         self.embedding_layer = NeckLayer(self.encoder.emb_dim, embedding_dim)
 
