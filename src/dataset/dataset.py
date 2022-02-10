@@ -31,8 +31,8 @@ class BaseDataset(Dataset):
 		if self.cache.exist(i):
 			return self.cache.get(i)
 		else:
-			char_index = i % self.n_fonts
-			font_index = i // self.n_fonts
+			char_index = i % len(self.allCharacters)
+			font_index = i // len(self.allCharacters)
 			char = self.allCharacters[char_index]
 			
 			data = self.fonts.gen_char_img(char, font_index)
@@ -67,7 +67,7 @@ class TripletDataset(BaseDataset):
 	'''	
 	def __init__(self, cfg, transform=None):
 		super().__init__(cfg, transform)
-		self.label_list = self.allCharacters
+		self.label_list = self.allCharacters * self.n_fonts
 		
 	def __getitem__(self, i):
 		char_index = i % self.n_fonts

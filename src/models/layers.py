@@ -52,8 +52,8 @@ class NeckLayer(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = self.GeM(x)
-        x = x.squeeze(-1).squeeze(-1)
+        # x = self.GeM(x)
+        # x = x.squeeze(-1).squeeze(-1)
         return self.model(x)
 
 
