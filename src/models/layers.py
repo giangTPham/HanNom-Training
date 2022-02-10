@@ -31,7 +31,7 @@ class Backbone(nn.Module):
     ):
         super().__init__()
         self.model = timm.create_model(backbone, pretrained=pretrained, num_classes=0, global_pool='')
-        self.emb_dim = self.model.bn4.num_features  # depend on model to get right embedding dim
+        # self.emb_dim = self.model.bn4.num_features  # depend on model to get right embedding dim
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.model(x)
