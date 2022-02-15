@@ -10,8 +10,8 @@ class BaseDataset(Dataset):
 	Base class for creating dataset.
 	Support generating synthetic images online.
 	'''
-	def __init__(self, cfg, transform=None):
-		self.fonts = FontStorage(n_fonts=cfg.data.n_fonts, 
+	def __init__(self, cfg, transform=None, one_font_only=False):
+		self.fonts = FontStorage(n_fonts=cfg.data.n_fonts if not one_font_only else 1, 
 			img_size=cfg.data.input_shape)
 		self.n_fonts = len(self.fonts)
 		self.allCharacters = get_allCharacters()
@@ -48,8 +48,8 @@ class SimSiamDataset(BaseDataset):
 	Return two different "views" of the same characters.
 	Two views are essentially generated from different fonts, with augmentation.
 	'''
-	def __init__(self, cfg, transform=None):
-		super().__init__(cfg, transform)
+	def __init__(self, cfg, transform=None, one_font_only=False):
+		super().__init__(cfg, transform, one_font_only)
 
 	def __getitem__(self, i):
 		char_index = i % self.n_fonts
@@ -65,8 +65,8 @@ class TripletDataset(BaseDataset):
 	Dataset used in Triplet experiment.
 	Return augmented images and their corresponding labels.
 	'''	
-	def __init__(self, cfg, transform=None):
-		super().__init__(cfg, transform)
+	def __init__(self, cfg, transform=None, one_font_only=False):
+		super().__init__(cfg, transform, one_font_only)
 		self.label_list = np.arange(self.n_chars).tile(self.n_fonts)
 
 		
