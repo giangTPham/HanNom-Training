@@ -97,7 +97,7 @@ if __name__ == '__main__':
         model = init_simsiam_model(cfg)
     elif 'triplet' in args.pipeline:
         model = init_triplet_model(cfg)
-    model.load_state_dict(torch.load(args.model_path))
+    model.load_state_dict(torch.load(args.model_path, map_location='cpu'))
     print('Done loading weights')
     evaluate(cfg, 5, model)
     

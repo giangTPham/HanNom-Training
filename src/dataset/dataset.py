@@ -67,7 +67,8 @@ class TripletDataset(BaseDataset):
 	'''	
 	def __init__(self, cfg, transform=None):
 		super().__init__(cfg, transform)
-		self.label_list = self.allCharacters * self.n_fonts
+		self.label_list = np.arange(self.n_chars).tile(self.n_fonts)
+
 		
 	def __getitem__(self, i):
 		char_index = i % self.n_fonts
