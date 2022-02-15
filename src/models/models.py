@@ -22,6 +22,7 @@ class TripletModel(nn.Module):
         #         param.requires_grad = False
 
         self.embedding_layer = NeckLayer(self.encoder.emb_dim, embedding_dim)
+        self.embedding_dim = embedding_dim
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         e = self.encoder(x)
@@ -59,6 +60,7 @@ class SimSiamModel(nn.Module):
             hidden_dim=pred_hidden_dim,
             output_dim=latent_dim
         )
+        self.embedding_dim = latent_dim
 
     def forward(self, x: torch.Tensor):
         return self.project(self.encode(x))
