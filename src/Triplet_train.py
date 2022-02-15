@@ -86,7 +86,7 @@ def main(cfg: SimpleNamespace) -> None:
 	weight_path = os.path.join(dir_path, 'weights', 'triplet')
 	if not (os.path.exists(weight_path)):
 		os.makedirs(weight_path)
-	torch.save(model.state_dict(), os.path.join(weight_path, cfg.model.name + "_final.pt"))
+	torch.jit.save(model.state_dict(), os.path.join(weight_path, cfg.model.name + "_final.pt"))
 
 
 if __name__ == "__main__":
