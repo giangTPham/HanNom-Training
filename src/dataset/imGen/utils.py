@@ -13,11 +13,14 @@ def download_font(font_path):
 	destination = os.path.join(font_path, save_dir)
 	download_file_from_google_drive(link_id, destination)
 	
-	with ZipFile(destination, 'r') as zip:
-		# extracting all the files
-		print('Extracting all the fonts...')
-		zip.extractall(font_path)
-		print('Done!')
+    print('Extracting all the fonts...')
+    try:
+        with ZipFile(destination, 'r') as zip:
+            # extracting all the files
+            zip.extractall(font_path)
+    except :
+        os.system('unzip {}'.format(destination))    
+    
 	os.remove(destination)
 	print('Using fonts from {} to generate training data.'.format(font_path))
 
