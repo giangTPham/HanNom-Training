@@ -1,4 +1,5 @@
 from dataset import TripletDataset
+from models import init_simsiam_model, init_triplet_model
 from dataset.dataAugment import *
 from utils import *
 import torch
@@ -29,6 +30,8 @@ def _k_neighbors(cfg, sample_dataset, test_dataset, k, embedding_dim):
 def evaluate(cfg, k: int, model, save_to='visualize.png'):
     sample_dataset = TripletDataset(cfg, transform=test_transforms(cfg), one_font_only=True)
     test_dataset = TripletDataset(cfg)
+    print("Number of test characters: {}".format(len(test_dataset)))
+    print("number of sample characters (used as labels): {}".format(len(sample_dataset)))
     
     knn = _k_neighbors(cfg, sample_dataset, test_dataset, k, model.embedding_dim)
     acc = _topk(*knn, k)
@@ -55,24 +58,6 @@ def visualize(I, test_dataset, sample_dataset, save_to, n=5):
     save_image(imgs, save_to, nrow=n,
             normalize=True, range=(0, 255))
         
-def init_simsiam_model(cfg):
-    model = SimSiamModel(
-        backbone=cfg.model.backbone,
-        latent_dim=cfg.model.latent_dim,
-        proj_hidden_dim=cfg.model.proj_hidden_dim,
-        pred_hidden_dim=cfg.model.pred_hidden_dim,
-        load_pretrained=cfg.model.pretrained,
-    )
-    return model
-    
-def init_triplet_model(cfg): 
-    model = TripletModel(
-		backbone=cfg.model.backbone,
-		embedding_dim=cfg.model.embedding_dim,
-		pretrained=cfg.model.pretrained,
-		freeze=cfg.model.freeze
-	)
-    return model
     
 if __name__ == '__main__':
     import argparse

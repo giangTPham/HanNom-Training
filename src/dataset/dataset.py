@@ -71,6 +71,8 @@ class TripletDataset(BaseDataset):
         import numpy as np
         self.label_list = np.tile(np.arange(self.n_chars), self.n_fonts)
 
+    def getlabel(self, i):
+        return self.allCharacters[i%self.n_chars]
         
     def __getitem__(self, i):
         char_index = i % self.n_fonts
@@ -78,4 +80,4 @@ class TripletDataset(BaseDataset):
         x = self.gen_char_img(i)
         
         return self.transform(x), np.array([char_index], dtype=np.int32)
-        
+ 

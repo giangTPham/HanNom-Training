@@ -1,1 +1,1 @@
-from .dataset import SimSiamDataset, TripletDataset
+from .dataset import *

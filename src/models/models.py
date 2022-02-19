@@ -73,3 +73,22 @@ class SimSiamModel(nn.Module):
 
     def predict(self, z: torch.Tensor) -> torch.Tensor:
         return self.predictor_mlp(z)
+
+def init_simsiam_model(cfg):
+    model = SimSiamModel(
+        backbone=cfg.model.backbone,
+        latent_dim=cfg.model.latent_dim,
+        proj_hidden_dim=cfg.model.proj_hidden_dim,
+        pred_hidden_dim=cfg.model.pred_hidden_dim,
+        load_pretrained=cfg.model.pretrained,
+    )
+    return model
+    
+def init_triplet_model(cfg): 
+    model = TripletModel(
+		backbone=cfg.model.backbone,
+		embedding_dim=cfg.model.embedding_dim,
+		pretrained=cfg.model.pretrained,
+		freeze=cfg.model.freeze
+	)
+    return model 
