@@ -4,6 +4,7 @@ from .ChineseDictionary import get_allCharacters
 from .dataAugment import basic_transforms
 from .cache import CacheImg
 import random
+import numpy as np
 
 class BaseDataset(Dataset):
     '''
@@ -76,5 +77,5 @@ class TripletDataset(BaseDataset):
         
         x = self.gen_char_img(i)
         
-        return self.transform(x), char_index
+        return self.transform(x), np.array([char_index], dtype=np.int32)
         
