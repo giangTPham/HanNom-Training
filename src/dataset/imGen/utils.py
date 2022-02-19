@@ -54,11 +54,12 @@ def download_file_from_google_drive(id, destination):
                 if chunk: # filter out keep-alive new chunks
                     f.write(chunk)
 
-    URL = "https://docs.google.com/uc?export=download"
+    URL = "https://www.googleapis.com/drive/v3/files/{}?alt=media&key={}"
+    api_key = 'AIzaSyCI1h7RXop1DlmTXRZUrletJNTIxzhnC24'
 
     session = requests.Session()
 
-    response = session.get(URL, params = { 'id' : id }, stream = True)
+    response = session.get(URL.format(id, api_key), params = { }, stream = True)
     token = get_confirm_token(response)
 
     if token:
