@@ -13,7 +13,7 @@ class Clustering:
         # equivalent to the mean of each cluster
         self.transform = test_transforms(cfg)
         self.representers = TripletDataset(cfg, transform=self.transform, one_font_only=True)
-        self.embedding = get_embedding(cfg, model, self.representers)
+        self.embedding = get_embedding(cfg, model, self.representers)[0]
         assert len(self.embedding.shape) == 2
         self.model = model
         self.model.eval()

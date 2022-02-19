@@ -11,6 +11,7 @@ class FontStorage:
 		self.font_names = list(filter(check_font_extension, os.listdir(self.font_path)))
 		self.cached_img_size=-1
 		self.n_fonts = len(self.font_names) if n_fonts is None else min(n_fonts, len(self.font_names))
+        self.font_names = self.font_names[:self.n_fonts]
 		
 		font_size = int(45 * img_size / 64)
 		self.load_font(font_size)
