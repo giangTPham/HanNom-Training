@@ -63,6 +63,7 @@ if __name__ == '__main__':
     
     cfg = parse_args(args.cfg_path)
     cfg.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    cfg.model.pretrained = False
     
     if 'simsiam' in args.model:
         model = init_simsiam_model(cfg)
@@ -77,5 +78,5 @@ if __name__ == '__main__':
     img = np.array(cv2.imread(args.img_path, 1), dtype=np.float32)
     clustering = Clustering(cfg, model)
     
-    print('Top {} possible characters are: {}'.format(k, 
+    print('Top {} possible characters are: {}'.format(args.k, 
         ','.join(clustering.top_k(clustering.embed_single_image(img), args.k))))

@@ -78,6 +78,7 @@ if __name__ == '__main__':
     
     cfg = parse_args(args.cfg_path)
     cfg.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    cfg.model.pretrained = False
     
     from models import *
     if 'simsiam' in args.pipeline:
