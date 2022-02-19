@@ -54,7 +54,7 @@ if __name__ == '__main__':
                         help='Config path')
                         
     parser.add_argument('--model_path', type=str, 
-                        default='weights/pretrained_final.pt',)
+                        default='weights/simsiam/pretrained_final.pt',)
                         
     parser.add_argument('--img_path', type=str)
     parser.add_argument('--k', type=int, default=5)
@@ -64,16 +64,17 @@ if __name__ == '__main__':
     cfg = parse_args(args.cfg_path)
     cfg.device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    if 'simsiam' in args.pipeline:
+    if 'simsiam' in args.model:
         model = init_simsiam_model(cfg)
-    elif 'triplet' in args.pipeline:
+    elif 'triplet' in args.model:
         model = init_triplet_model(cfg)
         
     model.load_state_dict(torch.load(args.model_path, map_location='cpu'))
     print('Done loading weights')
     
     import cv2
-    img = cv2.imread(args.img_path, 1)
+    import numpy as np
+    img = np.array(cv2.imread(args.img_path, 1), dtype=np.float32)
     clustering = Clustering(cfg, model)
     
     print('Top {} possible characters are: {}'.format(k, 
