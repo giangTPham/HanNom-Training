@@ -5,18 +5,19 @@ import torch
 import numpy as np
 import faiss
 
-def _topk(sample_labels, test_labels, I):
+def _topk(sample_labels, test_labels, I, k):
     correct = 0
-    for test_label, i in zip(I, test_labels):
-        if test_label in i:
+    for test_label, i in zip(test_labels, I):
+        if test_label in i[:min(k, len(i))]:
             correct += 1
     
-    acc = correct/float(len(test_labels))
+    acc = correct/float(len(test_labels)+1e-7)
     return acc
 
 def _k_neighbors(cfg, sample_dataset, test_dataset, k, embedding_dim):
     sample_embedding, sample_labels = get_embedding(cfg, model, sample_dataset)
     test_embedding, test_labels = get_embedding(cfg, model, test_dataset)
+    
 
     faiss_index = faiss.IndexFlatL2(embedding_dim)
     faiss_index.add(sample_embedding)
@@ -30,8 +31,9 @@ def evaluate(cfg, k: int, model, save_to='visualize.png'):
     test_dataset = TripletDataset(cfg)
     
     knn = _k_neighbors(cfg, sample_dataset, test_dataset, k, model.embedding_dim)
-    acc = _topk(*knn)
-    print('Top {} accuracy: {:.2f}%'.format(k, acc*100))
+    acc = _topk(*knn, k)
+    print('Top {} accuracy: {:.3f}%'.format(k, acc*100))
+    print('Top 1 accuracy: {:.3f}'.format(_topk(*knn, 1)))
     _, _, I = knn
     visualize(I, test_dataset, sample_dataset, save_to)
     
@@ -50,7 +52,7 @@ def visualize(I, test_dataset, sample_dataset, save_to, n=5):
     
     from torchvision.utils import save_image
     
-    save_image(imgs, save_to, ncol=5,
+    save_image(imgs, save_to, nrow=n,
             normalize=True, range=(0, 255))
         
 def init_simsiam_model(cfg):
