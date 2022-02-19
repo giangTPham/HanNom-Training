@@ -70,7 +70,8 @@ class Encoder(nn.Module):
         self.model = nn.Sequential(*list(model.children())[:-1])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.model(x).squeeze()
+        out = self.model(x)
+        return out.view(out.shape[:-2])
 
 
 class PredictorMLP(nn.Module):

@@ -15,101 +15,101 @@ from utils import parse_args, AverageMeter, calculate_std_l2_norm
 
 def main(cfg) -> None:
 
-	model = SimSiamModel(
-		backbone=cfg.model.backbone,
-		latent_dim=cfg.model.latent_dim,
-		proj_hidden_dim=cfg.model.proj_hidden_dim,
-		pred_hidden_dim=cfg.model.pred_hidden_dim,
-		load_pretrained=cfg.model.pretrained,
-	)
-	
-	model = model.to(cfg.device)
-	model.train()
+    model = SimSiamModel(
+        backbone=cfg.model.backbone,
+        latent_dim=cfg.model.latent_dim,
+        proj_hidden_dim=cfg.model.proj_hidden_dim,
+        pred_hidden_dim=cfg.model.pred_hidden_dim,
+        load_pretrained=cfg.model.pretrained,
+    )
+    
+    model = model.to(cfg.device)
+    model.train()
 
 
-	opt = torch.optim.AdamW(
-		params=model.parameters(),
-		lr=cfg.train.lr,
-		betas=(0.9, 0.999),
-		weight_decay=cfg.train.weight_decay
-	)
+    opt = torch.optim.AdamW(
+        params=model.parameters(),
+        lr=cfg.train.lr,
+        betas=(0.9, 0.999),
+        weight_decay=cfg.train.weight_decay
+    )
 
-	train_dataset = SimSiamDataset(cfg)
+    train_dataset = SimSiamDataset(cfg)
 
-	train_dataloader = torch.utils.data.DataLoader(
-					dataset=train_dataset,
-					batch_size=cfg.train.batch_size,
-					shuffle=True,
-					drop_last=False,
-					pin_memory=True,
-					num_workers=torch.multiprocessing.cpu_count()
-	)
+    train_dataloader = torch.utils.data.DataLoader(
+                    dataset=train_dataset,
+                    batch_size=cfg.train.batch_size,
+                    shuffle=True,
+                    drop_last=False,
+                    pin_memory=True,
+                    num_workers=torch.multiprocessing.cpu_count()
+    )
 
 
-	train_aug = augment_transforms(cfg=cfg).to(cfg.device)
+    train_aug = augment_transforms(cfg=cfg).to(cfg.device)
 
-	writer = SummaryWriter()
+    writer = SummaryWriter()
 
-	n_iter = 0
-	std_tracker = AverageMeter('std_stacker')
-	for epoch in range(cfg.train.epochs):
-		print("="*50)
-		print("Epochs [{}/{}]".format(epoch+1, cfg.train.epochs))
-		std_tracker.reset()
-		
-		for batch, (x1, x2) in enumerate(train_dataloader):
-			opt.zero_grad()
-			x1, x2 = x1.to(cfg.device), x2.to(cfg.device)
-			
-			x1, x2 = train_aug(x1), train_aug(x2)
-			
-			# project
-			z1, z2 = model(x1), model(x2)
+    n_iter = 0
+    std_tracker = AverageMeter('std_stacker')
+    for epoch in range(cfg.train.epochs):
+        print("="*50)
+        print("Epochs [{}/{}]".format(epoch+1, cfg.train.epochs))
+        std_tracker.reset()
+        
+        for batch, (x1, x2) in enumerate(train_dataloader):
+            opt.zero_grad()
+            x1, x2 = x1.to(cfg.device), x2.to(cfg.device)
+            
+            x1, x2 = train_aug(x1), train_aug(x2)
+            
+            # project
+            z1, z2 = model(x1), model(x2)
 
-			# predict
-			p1, p2 = model.predict(z1), model.predict(z2)
+            # predict
+            p1, p2 = model.predict(z1), model.predict(z2)
 
-			# compute loss
-			loss1 = negative_cosine_similarity(p1, z2)
-			loss2 = negative_cosine_similarity(p2, z1)
-			loss = (loss1 + loss2)/2
-			loss.backward()
-			opt.step()
-			with torch.no_grad():
-				z1_std = calculate_std_l2_norm(z1)
-				z2_std = calculate_std_l2_norm(z2)
-				std_tracker.update(z1_std + z2_std)
+            # compute loss
+            loss1 = negative_cosine_similarity(p1, z2)
+            loss2 = negative_cosine_similarity(p2, z1)
+            loss = (loss1 + loss2)/2
+            loss.backward()
+            opt.step()
+            with torch.no_grad():
+                z1_std = calculate_std_l2_norm(z1)
+                z2_std = calculate_std_l2_norm(z2)
+                std_tracker.update(z1_std + z2_std)
 
-			if n_iter % cfg.train.log_interval == 0:
-				print("[Epoch {}/{} | Iter {}/{} | Loss: {:.4f} | Std: {:.4f}]".format(epoch+1, cfg.train.epochs,
-					n_iter, len(train_dataloader), float(loss), std_tracker.avg))
-				writer.add_scalar(tag="loss/train", scalar_value=float(loss), global_step=n_iter)
-				writer.add_scalar(tag='loss/std', scalar_value=std_tracker.avg, global_step=n_iter)
+            if n_iter % cfg.train.log_interval == 0:
+                print("[Epoch {}/{} | Iter {}/{} | Loss: {:.4f} | Std: {:.4f}]".format(epoch+1, cfg.train.epochs,
+                    n_iter, len(train_dataloader), float(loss), std_tracker.avg))
+                writer.add_scalar(tag="loss/train", scalar_value=float(loss), global_step=n_iter)
+                writer.add_scalar(tag='loss/std', scalar_value=std_tracker.avg, global_step=n_iter)
 
-			n_iter += 1
-			
+            n_iter += 1
+            
 
-	# save model
-	dir_path = os.path.dirname(os.path.realpath(__file__))
-	weight_path = os.path.join(dir_path, 'weights', 'simsiam')
-	if not (os.path.exists(weight_path)):
-		os.makedirs(weight_path)
-	torch.save(model.state_dict(), os.path.join(weight_path, cfg.model.name + "_final.pt"))
+    # save model
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    weight_path = os.path.join(dir_path, 'weights', 'simsiam')
+    if not (os.path.exists(weight_path)):
+        os.makedirs(weight_path)
+    torch.save(model.state_dict(), os.path.join(weight_path, cfg.model.name + "_final.pt"))
 
 
 if __name__ == "__main__":
-	import argparse
-	
-	parser = argparse.ArgumentParser()
-	parser.add_argument('--cfg_path', type=str, 
-						default='experiment_configs/train_simsiam.yaml',
+    import argparse
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--cfg_path', type=str, 
+                        default='experiment_configs/train_simsiam.yaml',
                         help='Config path')
-	parser.add_argument('--epochs', type=int, 
-						default=-1,
+    parser.add_argument('--epochs', type=int, 
+                        default=-1,
                         help='Number of epochs')
-	args = parser.parse_args()
-	
-	cfg = parse_args(args.cfg_path)
-	cfg.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-	cfg.train.epochs = cfg.train.epochs if args.epochs <= 0 else args.epochs
-	main(cfg)
+    args = parser.parse_args()
+    
+    cfg = parse_args(args.cfg_path)
+    cfg.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    cfg.train.epochs = cfg.train.epochs if args.epochs <= 0 else args.epochs
+    main(cfg)

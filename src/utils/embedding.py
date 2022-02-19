@@ -9,6 +9,10 @@ def get_embedding(cfg, model, dataset):
         drop_last=False,
         num_workers=torch.multiprocessing.cpu_count()
     )
+    try:
+        return np.load('embedding.npy'), np.load('labels.npy')
+    except:
+        model.eval()
     model.eval()
     embeddings = np.ones((len(dataset), model.embedding_dim), np.float32)
     labels = np.ones((len(dataset), 1), np.int)
@@ -22,5 +26,6 @@ def get_embedding(cfg, model, dataset):
             embeddings[img_iter - batch_size: img_iter] = img_embedding
             labels[img_iter - batch_size: img_iter] = label.cpu().numpy()
             
-        # np.save(cfg.embedding_info.embedding_file_path, embeddings)
+        np.save('embedding.npy', embeddings)
+        np.save('labels.npy', embeddings)
     return embeddings, labels
