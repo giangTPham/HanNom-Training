@@ -27,5 +27,5 @@ def get_embedding(cfg, model, dataset, model_name:str, name:str):
             labels[img_iter - batch_size: img_iter] = label.cpu().numpy()
             
         np.save('{}_{}_embedding.npy'.format(model_name, name), embeddings)
-        np.save('{}_{}_labels.npy'.format(model_name, name), embeddings)
+        np.save('{}_{}_labels.npy'.format(model_name, name), labels)
     return embeddings, labels

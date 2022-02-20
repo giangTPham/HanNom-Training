@@ -37,9 +37,9 @@ def evaluate(cfg, k: int, model, model_name, save_to='visualize.png'):
     knn = _k_neighbors(cfg, sample_dataset, test_dataset, k, model.embedding_dim, model_name)
     acc = _topk(*knn, k)
     print('Top {} accuracy: {:.3f}%'.format(k, acc*100))
-    print('Top 1 accuracy: {:.3f}'.format(_topk(*knn, 1)))
+    print('Top 1 accuracy: {:.3f}%'.format(_topk(*knn, 1)*100))
     _, _, I = knn
-    visualize(I, test_dataset, sample_dataset, save_to)
+    visualize(I, test_dataset, sample_dataset, model_name+save_to)
     
 def visualize(I, test_dataset, sample_dataset, save_to, n=5):
     k = len(I[0])
@@ -57,7 +57,7 @@ def visualize(I, test_dataset, sample_dataset, save_to, n=5):
     from torchvision.utils import save_image
     
     save_image(imgs, save_to, nrow=n,
-            normalize=True, range=(0, 255))
+            normalize=True, scale_each=True)
         
     
 if __name__ == '__main__':
@@ -73,7 +73,7 @@ if __name__ == '__main__':
                         help='Config path')
                         
     parser.add_argument('--model_path', type=str, 
-                        default='weights/pretrained_final.pt',)
+                        default='weights/simsiam/pretrained_final.pt',)
                         
     args = parser.parse_args()
     
