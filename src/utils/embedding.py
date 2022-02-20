@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-def get_embedding(cfg, model, dataset, name):
+def get_embedding(cfg, model, dataset, model_name:str, name:str):
     dataloader =  torch.utils.data.DataLoader(
         dataset=dataset,
         batch_size=cfg.train.batch_size,
@@ -10,7 +10,7 @@ def get_embedding(cfg, model, dataset, name):
         num_workers=torch.multiprocessing.cpu_count()
     )
     try:
-        return np.load(f'{name}_embedding.npy'), np.load(f'{name}_labels.npy')
+        return np.load(f'{model_name}_{name}_embedding.npy'), np.load(f'{model_name}_{name}_labels.npy')
     except:
         model.eval()
     model.eval()
@@ -26,6 +26,6 @@ def get_embedding(cfg, model, dataset, name):
             embeddings[img_iter - batch_size: img_iter] = img_embedding
             labels[img_iter - batch_size: img_iter] = label.cpu().numpy()
             
-        np.save(f'{name}_embedding.npy', embeddings)
-        np.save(f'{name}_labels.npy', embeddings)
+        np.save('{}_{}_embedding.npy'.format(model_name, name), embeddings)
+        np.save('{}_{}_labels.npy'.format(model_name, name), embeddings)
     return embeddings, labels

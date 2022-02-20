@@ -15,9 +15,9 @@ def _topk(sample_labels, test_labels, I, k):
     acc = correct/float(len(test_labels)+1e-7)
     return acc
 
-def _k_neighbors(cfg, sample_dataset, test_dataset, k, embedding_dim):
-    sample_embedding, sample_labels = get_embedding(cfg, model, sample_dataset)
-    test_embedding, test_labels = get_embedding(cfg, model, test_dataset)
+def _k_neighbors(cfg, sample_dataset, test_dataset, k, embedding_dim, model_name:str):
+    sample_embedding, sample_labels = get_embedding(cfg, model, sample_dataset, model_name, 'sample_dataset')
+    test_embedding, test_labels = get_embedding(cfg, model, test_dataset, model_name, 'test_dataset')
     
 
     faiss_index = faiss.IndexFlatL2(embedding_dim)
@@ -27,13 +27,14 @@ def _k_neighbors(cfg, sample_dataset, test_dataset, k, embedding_dim):
     
     return sample_labels, test_labels, I
 
-def evaluate(cfg, k: int, model, save_to='visualize.png'):
+def evaluate(cfg, k: int, model, model_name, save_to='visualize.png'):
+    model.to(cfg.device)
     sample_dataset = TripletDataset(cfg, transform=test_transforms(cfg), one_font_only=True)
     test_dataset = TripletDataset(cfg)
     print("Number of test characters: {}".format(len(test_dataset)))
     print("number of sample characters (used as labels): {}".format(len(sample_dataset)))
     
-    knn = _k_neighbors(cfg, sample_dataset, test_dataset, k, model.embedding_dim)
+    knn = _k_neighbors(cfg, sample_dataset, test_dataset, k, model.embedding_dim, model_name)
     acc = _topk(*knn, k)
     print('Top {} accuracy: {:.3f}%'.format(k, acc*100))
     print('Top 1 accuracy: {:.3f}'.format(_topk(*knn, 1)))
@@ -87,5 +88,5 @@ if __name__ == '__main__':
         model = init_triplet_model(cfg)
     model.load_state_dict(torch.load(args.model_path, map_location='cpu'))
     print('Done loading weights')
-    evaluate(cfg, 5, model)
+    evaluate(cfg, 5, model, args.pipeline)
     

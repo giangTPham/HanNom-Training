@@ -7,15 +7,16 @@ import torch
 import faiss
 
 class Clustering:
-    def __init__(self, cfg, model):
+    def __init__(self, cfg, model, model_name):
             
         # Representers for each different character in dataset
         # equivalent to the mean of each cluster
         self.transform = test_transforms(cfg)
         self.representers = TripletDataset(cfg, transform=self.transform, one_font_only=True)
-        self.embedding = get_embedding(cfg, model, self.representers)[0]
+        self.embedding = get_embedding(cfg, model, self.representers, model_name, 'sample_dataset')[0]
         assert len(self.embedding.shape) == 2
         self.model = model
+        self.model.to(cfg.device)
         self.model.eval()
         self.device = cfg.device
         
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     import cv2
     import numpy as np
     img = np.array(cv2.imread(args.img_path, 1), dtype=np.float32)
-    clustering = Clustering(cfg, model)
+    clustering = Clustering(cfg, model, args.model)
     
     print('Top {} possible characters are: {}'.format(args.k, 
         ','.join(clustering.top_k(clustering.embed_single_image(img), args.k))))
