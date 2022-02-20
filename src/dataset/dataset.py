@@ -76,7 +76,7 @@ class TripletDataset(BaseDataset):
         return self.allCharacters[i%self.n_chars]
         
     def __getitem__(self, i):
-        char_index = i % self.n_fonts
+        char_index = i % self.n_chars
         
         x = self.gen_char_img(i)
         
