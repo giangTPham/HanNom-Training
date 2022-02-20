@@ -80,5 +80,5 @@ class TripletDataset(BaseDataset):
         
         x = self.gen_char_img(i)
         
-        return self.transform(x), np.array([char_index], dtype=np.int32)
+        return self.transform(x), char_index
  

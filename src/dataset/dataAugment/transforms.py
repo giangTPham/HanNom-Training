@@ -49,9 +49,18 @@ def test_transforms(cfg) -> T.Compose:
     return T.Compose([
         ToTensor(),
         T.Resize(size=cfg.data.input_shape),
-        # T.RandomApply([T.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0))]),
-        T.Normalize(mean=MEAN, std=STD)
+        T.RandomApply([T.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0))]),
+        Normalize(mean=MEAN, std=STD)
     ])
+    
+class Normalize(nn.Module):
+    def __init__(self, mean, std):
+        super().__init__()
+        self.mean = torch.Tensor(mean)
+        self.std = torch.Tensor(std)
+        
+    def forward(self, x):
+        return (x-self.mean)/self.std
 
 class ToTensor(nn.Module):
 	def __init__(self):

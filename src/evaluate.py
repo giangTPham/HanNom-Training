@@ -32,6 +32,12 @@ def evaluate(cfg, k: int, model, model_name, save_to='visualize.png'):
     model.to(cfg.device)
     sample_dataset = TripletDataset(cfg, transform=test_transforms(cfg), one_font_only=True)
     test_dataset = TripletDataset(cfg)
+    # sanity check mean and std
+    sample1 = sample_dataset[0][0]
+    sample2 = test_dataset[0][0]
+    print('mean and std of the first sample in sample dataset', sample1.mean(), sample1.std())
+    print('mean and std of the first sample in test dataset', sample2.mean(), sample2.std())
+    
     print("Number of test characters: {}".format(len(test_dataset)))
     print("number of sample characters (used as labels): {}".format(len(sample_dataset)))
     

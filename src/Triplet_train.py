@@ -9,11 +9,12 @@ from dataset.dataAugment import augment_transforms
 from dataset import TripletDataset
 from pytorch_metric_learning import samplers
 from pytorch_metric_learning import distances, losses, miners, reducers
-from utils import parse_args
+from pytorch_metric_learning.utils.accuracy_calculator import AccuracyCalculator
+from utils import parse_args, eval_metric_model
 
 
 def main(cfg: SimpleNamespace) -> None:
-    model = TripletModel(
+    model = TripletModel(   
         backbone=cfg.model.backbone,
         embedding_dim=cfg.model.embedding_dim,
         pretrained=cfg.model.pretrained,
@@ -38,12 +39,22 @@ def main(cfg: SimpleNamespace) -> None:
     mining_func = miners.TripletMarginMiner(
         margin=cfg.train.loss_margin, distance=distance, type_of_triplets="semihard"
     )
+    accuracy_calculator = AccuracyCalculator(include=("precision_at_1", "mean_average_precision",
+                                                      'mean_average_precision_at_r', 'r_precision'), k=None)
+
     
     train_dataset = TripletDataset(cfg)
     # print("=====Debug Start=========")
     # print(train_dataset.label_list)
     # print(cfg.data.sample_per_cls)
     # print("=====Debug End=========")
+    
+    query_transform = test_transforms(cfg)
+    query_dataset = TripletDataset(cfg, mode='query', transform=query_transform)
+    
+    eval_transform = test_transforms(cfg)
+    eval_dataset = TripletDataset(cfg, mode='eval', transform=eval_transform)
+    
     train_sampler = samplers.MPerClassSampler(train_dataset.label_list, cfg.data.sample_per_cls, batch_size=None,
                                               length_before_new_iter=len(train_dataset.label_list))
     train_dataloader = torch.utils.data.DataLoader(train_dataset,
@@ -67,7 +78,7 @@ def main(cfg: SimpleNamespace) -> None:
             x, y = x.to(cfg.device), y.to(cfg.device)
             x = data_aug(x)
             embedding = model(x)
-            y = y.squeeze(-1)
+ 
             indices_tuple = mining_func(embedding, y)
             loss = loss_func(embedding, y, indices_tuple)
             loss.backward()
@@ -80,7 +91,9 @@ def main(cfg: SimpleNamespace) -> None:
                         epoch, n_iter, loss, mining_func.num_triplets
                     )
                 )
-                
+            if n_iter % cfg.train.eval_inter == 0:
+                _ = eval_metric_model(query_dataset, eval_dataset, model, accuracy_calculator, writer, n_iter)
+            n_iter += 1    
             n_iter += 1
     # save model
     dir_path = os.path.dirname(os.path.realpath(__file__))

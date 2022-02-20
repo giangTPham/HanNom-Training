@@ -24,7 +24,7 @@ def get_embedding(cfg, model, dataset, model_name:str, name:str):
             img = img.to(cfg.device)
             img_embedding = model(img).cpu().numpy()
             embeddings[img_iter - batch_size: img_iter] = img_embedding
-            labels[img_iter - batch_size: img_iter] = label.cpu().numpy()
+            labels[img_iter - batch_size: img_iter] = label.cpu().numpy().reshape(-1, 1)
             
         np.save('{}_{}_embedding.npy'.format(model_name, name), embeddings)
         np.save('{}_{}_labels.npy'.format(model_name, name), labels)
