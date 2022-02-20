@@ -24,6 +24,7 @@ class BaseDataset(Dataset):
         
         if self.transform is None:
             self.transform = basic_transforms(cfg)
+
             
     def __len__(self):
         return self.len

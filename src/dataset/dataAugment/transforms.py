@@ -49,7 +49,7 @@ def test_transforms(cfg) -> T.Compose:
     return T.Compose([
         ToTensor(),
         T.Resize(size=cfg.data.input_shape),
-        T.RandomApply([T.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0))]),
+        # T.RandomApply([T.GaussianBlur(kernel_size=5, sigma=(0.1, 2.0))]),
         T.Normalize(mean=MEAN, std=STD)
     ])
 
