@@ -18,7 +18,8 @@ def _topk(sample_labels, test_labels, I, k):
 def _k_neighbors(cfg, sample_dataset, test_dataset, k, embedding_dim, model_name:str):
     sample_embedding, sample_labels = get_embedding(cfg, model, sample_dataset, model_name, 'sample_dataset')
     test_embedding, test_labels = get_embedding(cfg, model, test_dataset, model_name, 'test_dataset')
-    
+    print(test_embedding.shape, test_labels.shape)
+    print(sample_embedding.shape, sample_labels.shape)
 
     faiss_index = faiss.IndexFlatL2(embedding_dim)
     faiss_index.add(sample_embedding)

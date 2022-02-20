@@ -67,6 +67,7 @@ def main(cfg: SimpleNamespace) -> None:
             x, y = x.to(cfg.device), y.to(cfg.device)
             x = data_aug(x)
             embedding = model(x)
+            y = y.squeeze(-1)
             indices_tuple = mining_func(embedding, y)
             loss = loss_func(embedding, y, indices_tuple)
             loss.backward()
