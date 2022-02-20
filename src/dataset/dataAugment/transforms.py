@@ -8,7 +8,7 @@ from PIL import Image
 
 
 MEAN = (100.,)*3
-STD = (70,)*3
+STD = (70.,)*3
 
 
 
@@ -21,12 +21,12 @@ def augment_transforms(cfg) -> nn.Sequential:
 		kornia.augmentation.RandomAffine(25, 0.1, scale=(0.95,1.1)),
         kornia.augmentation.RandomErasing(scale=(0.01, cfg.data.augmentation.random_erase), value=1, p=0.3),
         kornia.augmentation.RandomGrayscale(p=0.2),
-        # kornia.augmentation.RandomResizedCrop(
-            # size=[cfg.data.input_shape]*2,
-            # scale=(cfg.data.augmentation.resize_scale, 1.0),
-            # ratio=(0.25, 1.33),
-            # p=0.2
-        # ),
+        kornia.augmentation.RandomResizedCrop(
+            size=[cfg.data.input_shape]*2,
+            scale=(cfg.data.augmentation.resize_scale, 1.0),
+            ratio=(0.25, 1.33),
+            p=0.2
+        ),
         kornia.augmentation.Normalize(
             mean=torch.tensor(MEAN),
             std=torch.tensor(STD)
