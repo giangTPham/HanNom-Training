@@ -56,8 +56,8 @@ def test_transforms(cfg) -> T.Compose:
 class Normalize(nn.Module):
     def __init__(self, mean, std):
         super().__init__()
-        self.mean = torch.Tensor(mean)
-        self.std = torch.Tensor(std)
+        self.mean = torch.Tensor(mean).view(3,1,1)
+        self.std = torch.Tensor(std).view(3,1,1)
         
     def forward(self, x):
         return (x-self.mean)/self.std

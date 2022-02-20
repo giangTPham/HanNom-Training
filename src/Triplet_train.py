@@ -50,10 +50,10 @@ def main(cfg: SimpleNamespace) -> None:
     # print("=====Debug End=========")
     
     query_transform = test_transforms(cfg)
-    query_dataset = TripletDataset(cfg, mode='query', transform=query_transform, one_font_only=True)
+    query_dataset = TripletDataset(cfg, transform=query_transform, one_font_only=True)
     
     eval_transform = test_transforms(cfg)
-    eval_dataset = TripletDataset(cfg, mode='eval', transform=eval_transform, one_font_only=True)
+    eval_dataset = TripletDataset(cfg, transform=eval_transform, one_font_only=True)
     
     train_sampler = samplers.MPerClassSampler(train_dataset.label_list, cfg.data.sample_per_cls, batch_size=None,
                                               length_before_new_iter=len(train_dataset.label_list))
@@ -94,7 +94,7 @@ def main(cfg: SimpleNamespace) -> None:
             if n_iter % cfg.train.eval_inter == 0:
                 _ = eval_metric_model(query_dataset, eval_dataset, model, accuracy_calculator, writer, n_iter)
             n_iter += 1    
-            n_iter += 1
+       
     # save model
     dir_path = os.path.dirname(os.path.realpath(__file__))
     weight_path = os.path.join(dir_path, 'weights', 'triplet')
