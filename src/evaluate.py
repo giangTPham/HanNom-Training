@@ -56,7 +56,7 @@ def visualize(I, test_dataset, sample_dataset, save_to, n=5):
     
     from torchvision.utils import save_image
     
-    save_image(imgs, save_to, nrow=n,
+    save_image(imgs, save_to, nrow=len(imgs)//n,
             normalize=True, scale_each=True)
         
     
