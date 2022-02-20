@@ -5,7 +5,7 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 
 from models import TripletModel
-from dataset.dataAugment import augment_transforms
+from dataset.dataAugment import *
 from dataset import TripletDataset
 from pytorch_metric_learning import samplers
 from pytorch_metric_learning import distances, losses, miners, reducers

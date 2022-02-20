@@ -1,5 +1,4 @@
 import torch
-from src.losses import negative_cosine_similarity
 from pytorch_metric_learning import testers
 from tqdm.auto import tqdm
 import numpy as np
