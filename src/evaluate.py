@@ -31,7 +31,7 @@ def _k_neighbors(cfg, sample_dataset, test_dataset, k, embedding_dim, model_name
 def evaluate(cfg, k: int, model, model_name, save_to='visualize.png'):
     model.to(cfg.device)
     sample_dataset = TripletDataset(cfg, transform=test_transforms(cfg), one_font_only=True)
-    test_dataset = TripletDataset(cfg)
+    test_dataset = TripletDataset(cfg, transform=test_transforms(cfg))
     # sanity check mean and std
     sample1 = sample_dataset[0][0]
     sample2 = test_dataset[0][0]

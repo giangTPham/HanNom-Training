@@ -31,7 +31,7 @@ class Backbone(nn.Module):
     ):
         super().__init__()
         self.model = timm.create_model(backbone, pretrained=pretrained, num_classes=0, global_pool='')
-        # self.emb_dim = self.model.bn4.num_features  # depend on model to get right embedding dim
+        self.emb_dim = self.model.num_features  # depend on model to get right embedding dim
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.model(x)
@@ -52,8 +52,8 @@ class NeckLayer(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x = self.GeM(x)
-        # x = x.squeeze(-1).squeeze(-1)
+        x = self.GeM(x)
+        x = x.squeeze(-1).squeeze(-1)
         return self.model(x)
 
 
@@ -70,8 +70,7 @@ class Encoder(nn.Module):
         self.model = nn.Sequential(*list(model.children())[:-1])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        out = self.model(x)
-        return out.view(out.shape[:-2])
+        return self.model(x).squeeze()
 
 
 class PredictorMLP(nn.Module):

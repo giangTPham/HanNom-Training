@@ -15,7 +15,7 @@ class TripletModel(nn.Module):
         super().__init__()
 
         # backbone network
-        self.encoder = Encoder(backbone=backbone, pretrained=pretrained)
+        self.encoder = Backbone(backbone=backbone, pretrained=pretrained)
 
         # if freeze:
         #     for param in self.backbone.parameters():
@@ -86,9 +86,9 @@ def init_simsiam_model(cfg):
     
 def init_triplet_model(cfg): 
     model = TripletModel(
-		backbone=cfg.model.backbone,
-		embedding_dim=cfg.model.embedding_dim,
-		pretrained=cfg.model.pretrained,
-		freeze=cfg.model.freeze
+      backbone=cfg.model.backbone,
+      embedding_dim=cfg.model.embedding_dim,
+      pretrained=cfg.model.pretrained,
+      freeze=cfg.model.freeze
 	)
     return model 
