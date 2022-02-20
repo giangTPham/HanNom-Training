@@ -13,7 +13,7 @@ def get_embedding(cfg, model, dataset, model_name:str, name:str):
         return np.load(f'{model_name}_{name}_embedding.npy'), np.load(f'{model_name}_{name}_labels.npy')
     except:
         model.eval()
-    model.eval()
+    
     embeddings = np.ones((len(dataset), model.embedding_dim), np.float32)
     labels = np.ones((len(dataset), 1), np.int)
     with torch.no_grad():

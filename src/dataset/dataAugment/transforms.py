@@ -15,10 +15,10 @@ STD = (70.,)*3
 def augment_transforms(cfg) -> nn.Sequential:
     augs = nn.Sequential(
         # kornia.augmentation.ColorJitter(1, 1, 1, 5, p=0.5),
-		kornia.augmentation.RandomBoxBlur(p=0.3),
+        kornia.augmentation.RandomBoxBlur(p=0.3),
         kornia.augmentation.RandomGaussianNoise(std=50),
-		kornia.augmentation.RandomPerspective(.3, p=.5),
-		kornia.augmentation.RandomAffine(25, 0.1, scale=(0.95,1.1)),
+        kornia.augmentation.RandomPerspective(.3, p=.5),
+        kornia.augmentation.RandomAffine(25, 0.1, scale=(0.95,1.1)),
         kornia.augmentation.RandomErasing(scale=(0.01, cfg.data.augmentation.random_erase), value=1, p=0.3),
         kornia.augmentation.RandomGrayscale(p=0.2),
         kornia.augmentation.RandomResizedCrop(
@@ -38,10 +38,10 @@ def augment_transforms(cfg) -> nn.Sequential:
 
 def basic_transforms(cfg) -> T.Compose:
     return T.Compose([
-		ToTensor(),
+        ToTensor(),
         T.Resize(size=[cfg.data.input_shape]*2),
         T.RandomApply([T.GaussianBlur(kernel_size=11, sigma=(0.1, 2.0))])
-		# T.Normalize(mean=MEAN, std=STD)
+        # T.Normalize(mean=MEAN, std=STD)
     ])
 
 
@@ -63,12 +63,12 @@ class Normalize(nn.Module):
         return (x-self.mean)/self.std
 
 class ToTensor(nn.Module):
-	def __init__(self):
-		super().__init__()
-		
-	def forward(self, x):
-		x = torch.Tensor(x)
-		size = x.shape
-		assert len(size) >= 3
-		x = x.transpose(-1,-2).transpose(-2, -3)
-		return x
+    def __init__(self):
+        super().__init__()
+        
+    def forward(self, x):
+        x = torch.Tensor(x)
+        size = x.shape
+        assert len(size) >= 3, size
+        x = x.transpose(-1,-2).transpose(-2, -3)
+        return x
