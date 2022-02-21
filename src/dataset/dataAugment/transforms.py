@@ -53,6 +53,13 @@ def test_transforms(cfg) -> T.Compose:
         Normalize(mean=MEAN, std=STD)
     ])
     
+def pure_transforms(cfg) -> T.Compose:
+    return T.Compose([
+        ToTensor(),
+        T.Resize(size=cfg.data.input_shape),
+        Normalize(mean=MEAN, std=STD)
+    ])
+    
 class Normalize(nn.Module):
     def __init__(self, mean, std):
         super().__init__()
