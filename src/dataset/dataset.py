@@ -11,9 +11,9 @@ class BaseDataset(Dataset):
     Base class for creating dataset.
     Support generating synthetic images online.
     '''
-    def __init__(self, cfg, transform=None, one_font_only=False):
+    def __init__(self, cfg, transform=None, one_font_only=False, *args, **kwargs):
         self.fonts = FontStorage(n_fonts=cfg.data.n_fonts if not one_font_only else 1, 
-            img_size=cfg.data.input_shape)
+            img_size=cfg.data.input_shape, *args, **kwargs)
         self.n_fonts = len(self.fonts)
         self.allCharacters = get_allCharacters()
         self.n_chars = len(self.allCharacters)

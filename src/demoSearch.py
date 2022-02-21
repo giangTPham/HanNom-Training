@@ -17,6 +17,7 @@ class Clustering:
         self.representers = TripletDataset(cfg, transform=self.transform, one_font_only=True)
         self.embedding = get_embedding(cfg, self.model, self.representers, model_name, 'sample_dataset')[0]
         assert len(self.embedding.shape) == 2
+        self.input_size = cfg.data.input_shape
         
         self.model.eval()
         self.device = cfg.device
@@ -27,6 +28,9 @@ class Clustering:
     def embed_single_image(self, image):
     
         if isinstance(image, np.ndarray):
+            assert len(image.shape) == 3, image.shape
+            # gray scale and resize given image
+            image = preprocess_img(image, self.input_size)
             image = self.transform(image)
         if not isinstance(image, torch.Tensor):
             raise ValueError("Unsupported input file, recommend using nd.array as input")
