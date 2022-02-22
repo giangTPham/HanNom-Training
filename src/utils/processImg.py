@@ -17,4 +17,4 @@ def resize_and_pad(img, tgt_size, padding_value=255):
 
 def preprocess_img(cv_img, tgt_size, padding_value=255):
     resized_img = resize_and_pad(Image.fromarray(cv_img).convert('L'), tgt_size, padding_value)
-    return resized_img
+    return resized_img.convert('RGB')
