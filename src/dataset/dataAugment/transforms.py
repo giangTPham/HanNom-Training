@@ -7,8 +7,8 @@ import torchvision.transforms as T
 from PIL import Image
 
 
-MEAN = (100.,)*3
-STD = (70.,)*3
+MEAN = (128.,)*3
+STD = (128.,)*3
 
 
 
