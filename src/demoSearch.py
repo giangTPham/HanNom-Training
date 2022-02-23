@@ -31,7 +31,7 @@ class Clustering:
             assert len(image.shape) == 3, image.shape
             # gray scale and resize given image
             image = preprocess_img(image, self.input_size)
-            image = self.transform(image)
+            image = self.transform(np.array(image))
         if not isinstance(image, torch.Tensor):
             raise ValueError("Unsupported input file, recommend using nd.array as input")
         
