@@ -28,18 +28,24 @@ class BaseDataset(Dataset):
             
     def __len__(self):
         return self.len
+        
+    def _gen_char_img(self, i):
+        char_index = i % len(self.allCharacters)
+        font_index = i // len(self.allCharacters)
+        char = self.allCharacters[char_index]
+        
+        data = self.fonts.gen_char_img(char, font_index)
+        self.cache.add(data, i)
+        return data
     
     def gen_char_img(self, i):
         if self.cache.exist(i):
-            return self.cache.get(i)
+            try:
+                return self.cache.get(i)
+            except:
+                return self._gen_char_img(i)
         else:
-            char_index = i % len(self.allCharacters)
-            font_index = i // len(self.allCharacters)
-            char = self.allCharacters[char_index]
-            
-            data = self.fonts.gen_char_img(char, font_index)
-            self.cache.add(data, i)
-            return data
+            return self._gen_char_img(i)
         
     def __getitem__(self, i):
         raise NotImplementedError
