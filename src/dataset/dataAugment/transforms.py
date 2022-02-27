@@ -14,23 +14,23 @@ STD = (128.,)*3
 
 def augment_transforms(cfg) -> nn.Sequential:
     augs = nn.Sequential(
-        # kornia.augmentation.ColorJitter(1, 1, 1, 5, p=0.5),
+        kornia.augmentation.ColorJitter(.2, .2, .2, .2, p=0.6),
         kornia.augmentation.RandomBoxBlur(p=0.3),
-        kornia.augmentation.RandomGaussianNoise(std=50),
+        kornia.augmentation.RandomGaussianNoise(std=.25),
         kornia.augmentation.RandomPerspective(.3, p=.5),
         kornia.augmentation.RandomAffine(25, 0.1, scale=(0.95,1.1)),
-        kornia.augmentation.RandomErasing(scale=(0.01, cfg.data.augmentation.random_erase), value=1, p=0.3),
+        kornia.augmentation.RandomErasing(scale=(0.01, cfg.data.augmentation.random_erase), value=1, p=0.6),
         kornia.augmentation.RandomGrayscale(p=0.2),
         kornia.augmentation.RandomResizedCrop(
             size=[cfg.data.input_shape]*2,
             scale=(cfg.data.augmentation.resize_scale, 1.0),
-            ratio=(0.25, 1.33),
+            ratio=(0.75, 1.33),
             p=0.2
         ),
-        kornia.augmentation.Normalize(
-            mean=torch.tensor(MEAN),
-            std=torch.tensor(STD)
-        )
+        # kornia.augmentation.Normalize(
+            # mean=torch.tensor(MEAN),
+            # std=torch.tensor(STD)
+        # )
     )
     # augs = augs.to(cfg.device)
     return augs
@@ -40,8 +40,8 @@ def basic_transforms(cfg) -> T.Compose:
     return T.Compose([
         ToTensor(),
         T.Resize(size=[cfg.data.input_shape]*2),
-        T.RandomApply([T.GaussianBlur(kernel_size=11, sigma=(0.1, 2.0))])
-        # T.Normalize(mean=MEAN, std=STD)
+        T.RandomApply([T.GaussianBlur(kernel_size=11, sigma=(0.1, 2.0))]),
+        T.Normalize(mean=MEAN, std=STD)
     ])
 
 

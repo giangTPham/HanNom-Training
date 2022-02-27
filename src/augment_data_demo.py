@@ -15,7 +15,7 @@ if __name__ == '__main__':
 	
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--config_path', type=str, 
-						default='./experiment_configs/train.yaml',
+						default='./experiment_configs/train_triplet.yaml',
                         help='Configuration file path')
 						
 	parser.add_argument('--save_to', type=str, 
