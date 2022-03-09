@@ -33,11 +33,11 @@ def main(cfg: SimpleNamespace) -> None:
         weight_decay=cfg.train.weight_decay
     )
 
-    distance = distances.CosineSimilarity()
+    # distance = distances.CosineSimilarity()
     reducer = reducers.ThresholdReducer(low=0)
-    loss_func = losses.TripletMarginLoss(margin=cfg.train.loss_margin, distance=distance, reducer=reducer)
+    loss_func = losses.TripletMarginLoss(margin=cfg.train.loss_margin, reducer=reducer)
     mining_func = miners.TripletMarginMiner(
-        margin=cfg.train.loss_margin, distance=distance, type_of_triplets="semihard"
+        margin=cfg.train.loss_margin, type_of_triplets="semihard"
     )
     accuracy_calculator = AccuracyCalculator(include=("precision_at_1", "mean_average_precision",
                                                       'mean_average_precision_at_r', 'r_precision'), k=None)
