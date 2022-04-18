@@ -6,6 +6,9 @@ from .cache import CacheImg
 import random
 import numpy as np
 
+TRAIN_SIZE = 6000
+TEST_SIZE = 200
+
 class BaseDataset(Dataset):
     '''
     Base class for creating dataset.
@@ -73,9 +76,15 @@ class TripletDataset(BaseDataset):
     Dataset used in Triplet experiment.
     Return augmented images and their corresponding labels.
     '''	
-    def __init__(self, cfg, transform=None, one_font_only=False):
+    def __init__(self, cfg, transform=None, one_font_only=False,train=True):
         super().__init__(cfg, transform, one_font_only)
         import numpy as np
+        if train:
+            self.allCharacters = self.allCharacters[:TRAIN_SIZE]
+            self.n_chars = len(self.allCharacters)
+        else:
+            self.allCharacters = self.allCharacters[TRAIN_SIZE:TRAIN_SIZE+TEST_SIZE]
+            self.n_chars = len(self.allCharacters)            
         self.label_list = np.tile(np.arange(self.n_chars), self.n_fonts)
 
     def getlabel(self, i):
