@@ -82,9 +82,11 @@ class TripletDataset(BaseDataset):
         if train:
             self.allCharacters = self.allCharacters[:TRAIN_SIZE]
             self.n_chars = len(self.allCharacters)
+            self.len = self.n_fonts * self.n_chars
         else:
             self.allCharacters = self.allCharacters[TRAIN_SIZE:TRAIN_SIZE+TEST_SIZE]
-            self.n_chars = len(self.allCharacters)            
+            self.n_chars = len(self.allCharacters)
+            self.len = self.n_fonts * self.n_chars
         self.label_list = np.tile(np.arange(self.n_chars), self.n_fonts)
 
     def getlabel(self, i):
