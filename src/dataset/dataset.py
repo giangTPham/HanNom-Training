@@ -83,6 +83,10 @@ class TripletDataset(BaseDataset):
             self.allCharacters = self.allCharacters[:TRAIN_SIZE]
             self.n_chars = len(self.allCharacters)
             self.len = self.n_fonts * self.n_chars
+        elif train is None:
+            self.allCharacters = self.allCharacters
+            self.n_chars = len(self.allCharacters)
+            self.len = self.n_fonts * self.n_chars
         else:
             self.allCharacters = self.allCharacters[TRAIN_SIZE:TRAIN_SIZE+TEST_SIZE]
             self.n_chars = len(self.allCharacters)
